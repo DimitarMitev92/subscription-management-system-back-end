@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../config/env.js";
+import User from "../models/user.model.js";
 
 export const signUp = async (req, res, next) => {
   const session = await mongoose.startSession();
@@ -26,7 +27,7 @@ export const signUp = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create a new user
-    const newUsers = await user.create(
+    const newUsers = await User.create(
       [{ name, email, password: hashedPassword }],
       {
         session,
