@@ -72,13 +72,33 @@ export const deleteSubscription = async (req, res, next) => {
       throw error;
     }
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        data: subscription,
-        message: "Subscription deleted",
-      });
+    res.status(200).json({
+      success: true,
+      data: subscription,
+      message: "Subscription deleted",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const cancelSubscription = async (req, res, next) => {
+  try {
+    const subscription = await Subscription.findById(req.params.id);
+    if (!subscription) {
+      const error = new Error("Subscription not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    subscription.status = "canceled";
+    await subscription.save();
+
+    res.status(200).json({
+      success: true,
+      data: subscription,
+      message: "Subscription canceled",
+    });
   } catch (error) {
     next(error);
   }
