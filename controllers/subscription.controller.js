@@ -43,3 +43,43 @@ export const getSubscriptionDetails = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updateSubscription = async (req, res, next) => {
+  try {
+    const updateSubscription = await Subscription.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!updateSubscription) {
+      const error = new Error("Subscription not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json({ success: true, data: updateSubscription });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteSubscription = async (req, res, next) => {
+  try {
+    const subscription = await Subscription.findByIdAndDelete(req.params.id);
+    if (!subscription) {
+      const error = new Error("Subscription not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        data: subscription,
+        message: "Subscription deleted",
+      });
+  } catch (error) {
+    next(error);
+  }
+};
