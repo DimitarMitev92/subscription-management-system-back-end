@@ -103,3 +103,17 @@ export const cancelSubscription = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getUpcomingRenewals = async (req, res, next) => {
+  try {
+    const today = new Date();
+    const upcomingRenewals = await Subscription.find({
+      renewalDate: { $gte: today },
+      status: "active",
+    }).sort({ renewalDate: 1 });
+
+    res.status(200).json({ success: true, data: upcomingRenewals });
+  } catch (error) {
+    next(error);
+  }
+};
