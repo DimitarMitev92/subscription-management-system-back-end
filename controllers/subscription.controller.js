@@ -1,5 +1,19 @@
 import Subscription from "../models/subscription.model.js";
 
+export const getAllSubscriptions = async (req, res, next) => {
+  try {
+    const subscriptions = await Subscription.find();
+    if (subscriptions.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No subscriptions found" });
+    }
+    res.status(200).json({ success: true, data: subscriptions });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const createSubscription = async (req, res, next) => {
   try {
     const subscription = await Subscription.create({
@@ -15,7 +29,6 @@ export const createSubscription = async (req, res, next) => {
 
 export const getUserSubscriptions = async (req, res, next) => {
   try {
-    // Check if the user is the owner of the subscription
     if (req.user.id !== req.params.id) {
       const error = new Error("You are not authorized to access this resource");
       error.statusCode = 401;
